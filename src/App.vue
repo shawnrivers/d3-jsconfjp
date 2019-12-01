@@ -2,69 +2,71 @@
   <div id="app">
     <!-- HEADER -->
     <h1>The Seasonality of Box Office Hits</h1>
-    <p class='description'>
-In the last decade, most block buster hits have happened around or during the summer and winter holidays.
-<strong>Brush</strong> the histograms to filter the movies by metascore and/or box office figures, and <strong>hover</strong> the movies to see more details.
+    <p class="description">
+      In the last decade, most block buster hits have happened around or during the summer and winter holidays.
+      <strong>Brush</strong> the histograms to filter the movies by metascore and/or box office figures, and
+      <strong>hover</strong> the movies to see more details.
     </p>
     <!-- AREA CHART -->
-    <div class='area-container'>
-      <div class='area-title'>
+    <div class="area-container">
+      <div class="area-title">
         <strong>$ over/under median box office</strong>
       </div>
-      <AreaChart v-bind='{movies}' />
+      <AreaChart v-bind="{movies}" />
     </div>
     <!-- HISTOGRAM -->
-    <div class='histograms' v-for='({id, label, format}) in histograms'>
-      <Histogram v-bind='{movies, filtered, id, format, updateFilters}' />
+    <div class="histograms" :key="id" v-for="({id, label, format}) in histograms">
+      <Histogram v-bind="{movies, filtered, id, format, updateFilters}" />
       <div>
         <strong>{{ label }}</strong>
       </div>
     </div>
-
   </div>
 </template>
 
 <script>
-import _ from 'lodash'
-import * as d3 from 'd3'
-import AreaChart from './components/AreaChart'
-import Histogram from './components/Histogram'
+import AreaChart from "./components/AreaChart";
+import Histogram from "./components/Histogram";
 
-const startYear = 2008
+const startYear = 2008;
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    Histogram, AreaChart,
+    Histogram,
+    AreaChart
   },
   data() {
     // register any data we want to track changes of
     return {
       histograms: [
-        {id: 'score', label: 'metascores'},
-        {id: 'boxOffice', label: 'box office figures', format: d => `$${parseInt(d/ 1000000)}M`},
+        { id: "score", label: "metascores" },
+        {
+          id: "boxOffice",
+          label: "box office figures",
+          format: d => `$${parseInt(d / 1000000)}M`
+        }
       ],
       movies: [],
       filters: {},
-      filtered: [],
-    }
+      filtered: []
+    };
   },
   mounted() {
     fetch(`./movies.json`)
       .then(resp => resp.json())
       .then(movies => {
         this.movies = _.chain(movies)
-          .map((d, id) => Object.assign(d, {id, date: new Date(d.date)}))
+          .map((d, id) => Object.assign(d, { id, date: new Date(d.date) }))
           .filter(d => d.boxOffice && d.year >= startYear)
           .value();
 
-        this.filtered = this.movies
+        this.filtered = this.movies;
       });
   },
   methods: {
-    updateFilters: function(filter) {
-    }
+    updateFilters: function(filter) {}
   }
-}
+};
 </script>
 
 <style>

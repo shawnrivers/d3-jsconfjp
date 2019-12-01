@@ -11,9 +11,7 @@
 </template>
 
 <script>
-import _ from "lodash";
 import * as d3 from "d3";
-import { TweenLite } from "gsap";
 
 const width = 1000;
 const height = 300;
@@ -74,9 +72,15 @@ export default {
 
       // Update area generater
       const minMaxScore = d3.extent(this.movies, d => d.score);
-      this.colorScale = d3.scaleSequential(d3.interpolateViridis).domain(minMaxScore).nice();
+      this.colorScale = d3
+        .scaleSequential(d3.interpolateViridis)
+        .domain(minMaxScore)
+        .nice();
 
-      this.area = d3.area().curve(d3.curveCatmullRom).y0(this.y0);
+      this.area = d3
+        .area()
+        .curve(d3.curveCatmullRom)
+        .y0(this.y0);
     },
     calculateData() {
       if (!this.movies.length) {
